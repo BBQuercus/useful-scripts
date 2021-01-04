@@ -1,3 +1,15 @@
+"""\U0001F525\U0001FAB0 Luciferase conversion script.
+
+The luciferase machine outputs a txt file that usually has to be converted to useful output manually.
+This script simplifies the entire process by combining a "format.csv" file containing information on which well (96-well plate) has which sample and the "output.txt" file from the luciferase machine.
+
+This is the proposed workflow:
+* Creating the format.csv file using `python luciferase.py --create_format`
+* Use your editor of choice (excel, numbers) to fill in the rows and columns matching with your samples
+* Save the output as .csv file (excel / numbers will suggest to use their own formats)
+* Merge the output.txt and format.csv file using `python luciferase.py -v output.txt -f format.csv`
+"""
+
 import argparse
 import os
 import re
@@ -72,9 +84,10 @@ def parse_files(file_values: str, file_format: str) -> None:
 
 def main():
     parser = argparse.ArgumentParser(
-        prog="Luciferase",
+        prog="luciferase",
         usage="python luciferase.py --values output.txt --format format.csv",
-        description="Convert Luciferase output a bit faster.",
+        description=__doc__,
+        formatter_class=argparse.RawTextHelpFormatter,
         add_help=True,
     )
     parser.add_argument(
@@ -97,6 +110,7 @@ def main():
             "the template from --create_format above."
         ),
     )
+    parser._optionals.title = "Arguments"
     args = parser.parse_args()
 
     if args.create_format:
