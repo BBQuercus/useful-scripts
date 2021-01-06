@@ -4,10 +4,10 @@ The luciferase machine outputs a txt file that usually has to be converted to us
 This script simplifies the entire process by combining a "format.csv" file containing information on which well (96-well plate) has which sample and the "output.txt" file from the luciferase machine.
 
 This is the proposed workflow:
-* Creating the format.csv file using `python luciferase.py --create_format`
+* Create the format.csv file using `python luciferase.py --create_format`
 * Use your editor of choice (excel, numbers) to fill in the rows and columns matching with your samples
-* Save the output as .csv file (excel / numbers will suggest to use their own formats)
-* Merge the output.txt and format.csv file using `python luciferase.py -v output.txt -f format.csv`
+* Save the output as .csv file (excel / numbers will suggest you to use their own formats)
+* Merge the output.txt and format.csv file using `python luciferase.py -v PATH/TO/output.txt -f PATH/TO/format.csv`
 """
 
 import argparse
@@ -23,6 +23,7 @@ def create_format(name: str = "format.csv") -> None:
     columns = list(range(1, 13))
     index = re.findall("[A-H]", string.printable)
     df = pd.DataFrame(index=index, columns=columns)
+    df.at["A", 1] = "Sample Name in A1"
     df.to_csv(name)
     print(f"Empty format file saved to {name}.")
 
@@ -52,6 +53,13 @@ def parse_files(file_values: str, file_format: str) -> None:
 
     # Open csv format file
     df = pd.read_csv(file_format, header=0, index_col=0)
+    not_column_numbers = any([str(i) for i in range(1, 13)] != df.columns.values)
+    not_index_letters = any(re.findall("[A-H]", string.printable) != df.index.values)
+    if not_column_numbers or not_index_letters:
+        raise ValueError(
+            "The provided format.csv file wasn't formatted properly. "
+            "Make sure it has the same format as the output from `python luciferase.py --create_format`"
+        )
 
     # Create save file
     with open(file_output, "w") as f:
@@ -63,7 +71,7 @@ def parse_files(file_values: str, file_format: str) -> None:
                 continue
 
             # Pattern match string
-            if reg := re.search(r"^([A-H])(\d+)\s(\d+)\s.+$", item):
+            if reg := re.search(r"^([A-H])(\d+)\s*(\d+).*$", item):
                 row = reg[1]
                 col = int(reg[2])
                 value = reg[3]
@@ -71,7 +79,7 @@ def parse_files(file_values: str, file_format: str) -> None:
                 continue
 
             # Get name from indices
-            name = df.loc[row][col]
+            name = df.loc[row][col - 1]
             if "," in str(name):
                 raise ValueError(
                     "The value from the csv file had a comma. "
@@ -92,17 +100,19 @@ def main():
     )
     parser.add_argument(
         "--create_format",
-        required=False,
+        action="store_true",
         help="Create the format csv file to fill in your sample names.",
     )
     parser.add_argument(
-        "-v", "--values",
+        "-v",
+        "--values",
         type=str,
         required=False,
         help="Path to the txt output file from the luciferase machine.",
     )
     parser.add_argument(
-        "-f", "--format",
+        "-f",
+        "--format",
         type=str,
         required=False,
         help=(
