@@ -1,32 +1,32 @@
-name: scripts
+name: test
 channels:
   - defaults
 dependencies:
-  - blas
-  - ca-certificates
-  - certifi
-  - intel-openmp
-  - libcxx
-  - libedit
-  - libffi
-  - mkl
-  - mkl-service
-  - mkl_fft
-  - mkl_random
-  - ncurses
-  - numpy
-  - numpy-base
-  - openssl
-  - pandas
-  - pip
-  - python
-  - python-dateutil
-  - pytz
-  - readline
-  - setuptools
-  - six
-  - sqlite
-  - tk
-  - wheel
-  - xz
-  - zlib
+  - blas=1.0
+  - ca-certificates=2020.12.8
+  - certifi=2020.12.5
+  - intel-openmp=2019.4
+  - libcxx=10.0.0
+  - libedit=3.1.20191231
+  - libffi=3.3
+  - mkl=2019.4
+  - mkl-service=2.3.0
+  - mkl_fft=1.2.0
+  - mkl_random=1.1.1
+  - ncurses=6.2
+  - numpy=1.19.2
+  - numpy-base=1.19.2
+  - openssl=1.1.1i
+  - pandas=1.1.5
+  - pip=20.3.3
+  - python=3.8.5
+  - python-dateutil=2.8.1
+  - pytz=2020.5
+  - readline=8.0
+  - setuptools=51.0.0
+  - six=1.15.0
+  - sqlite=3.33.0
+  - tk=8.6.10
+  - wheel=0.36.2
+  - xz=5.2.5
+  - zlib=1.2.11
