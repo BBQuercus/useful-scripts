@@ -63,7 +63,7 @@ def parse_files(file_values: str, file_format: str) -> None:
 
     # Create save file
     with open(file_output, "w") as f:
-        f.write("location, name, value\n")
+        f.write("location,name,value\n")
 
         for item in data:
             # Check if item is empty
@@ -86,7 +86,7 @@ def parse_files(file_values: str, file_format: str) -> None:
                     "Make sure to pass names without commas!"
                 )
 
-            f.write(f"{row}{col}, {name}, {value}\n")
+            f.write(f"{row}{col},{name},{value}\n")
     print(f"Formatted file saved to {file_output}.")
 
 
